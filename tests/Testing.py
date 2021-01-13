@@ -14,13 +14,6 @@ class Tests(unittest.TestCase):
 
         result = {"run_time": [], "sp_time": [], "scc_time": []}
 
-        G_10_80_0 = '../data/G_10_80_0.json'
-        G_100_800_0 = '../data/G_100_800_0.json'
-        G_1000_8000_0 = '../data/G_1000_8000_0.json'
-        G_10000_80000_0 = '../data/G_10000_80000_0.json'
-        G_20000_160000_0 = '../data/G_20000_160000_0.json'
-        G_30000_240000_0 = '../data/G_30000_240000_0.json'
-
         G_10_80_1 = '../data/G_10_80_1.json'
         G_100_800_1 = '../data/G_100_800_1.json'
         G_1000_8000_1 = '../data/G_1000_8000_1.json'
@@ -28,16 +21,12 @@ class Tests(unittest.TestCase):
         G_20000_160000_1 = '../data/G_20000_160000_1.json'
         G_30000_240000_1 = '../data/G_30000_240000_1.json'
 
-        G_10_80_2 = '../data/G_10_80_2.json'
-        G_100_800_2 = '../data/G_100_800_2.json'
-        G_1000_8000_2 = '../data/G_1000_8000_2.json'
-        G_10000_80000_2 = '../data/G_10000_80000_2.json'
-        G_20000_160000_2 = '../data/G_20000_160000_2.json'
-        G_30000_240000_2 = '../data/G_30000_240000_2.json'
-
-        file_list = [G_10_80_0, G_100_800_0, G_1000_8000_0, G_10000_80000_0, G_20000_160000_0, G_30000_240000_0,
-                     G_10_80_1, G_100_800_1, G_1000_8000_1, G_10000_80000_1, G_20000_160000_1, G_30000_240000_1,
-                     G_10_80_2, G_100_800_2, G_1000_8000_2, G_10000_80000_2, G_20000_160000_2, G_30000_240000_2]
+        file_list = [G_10_80_1,
+                     G_100_800_1,
+                     G_1000_8000_1,
+                     G_10000_80000_1,
+                     G_20000_160000_1,
+                     G_30000_240000_1]
 
         algo = GraphAlgo()
 
@@ -105,13 +94,6 @@ class Tests(unittest.TestCase):
 
         result = {"nx_run_time": [], "nx_sp_time": [], "nx_scc_time": []}
 
-        G_10_80_0 = '../data/G_10_80_0.json'
-        G_100_800_0 = '../data/G_100_800_0.json'
-        G_1000_8000_0 = '../data/G_1000_8000_0.json'
-        G_10000_80000_0 = '../data/G_10000_80000_0.json'
-        G_20000_160000_0 = '../data/G_20000_160000_0.json'
-        G_30000_240000_0 = '../data/G_30000_240000_0.json'
-
         G_10_80_1 = '../data/G_10_80_1.json'
         G_100_800_1 = '../data/G_100_800_1.json'
         G_1000_8000_1 = '../data/G_1000_8000_1.json'
@@ -119,20 +101,18 @@ class Tests(unittest.TestCase):
         G_20000_160000_1 = '../data/G_20000_160000_1.json'
         G_30000_240000_1 = '../data/G_30000_240000_1.json'
 
-        G_10_80_2 = '../data/G_10_80_2.json'
-        G_100_800_2 = '../data/G_100_800_2.json'
-        G_1000_8000_2 = '../data/G_1000_8000_2.json'
-        G_10000_80000_2 = '../data/G_10000_80000_2.json'
-        G_20000_160000_2 = '../data/G_20000_160000_2.json'
-        G_30000_240000_2 = '../data/G_30000_240000_2.json'
+        file_list = [G_10_80_1,
+                     G_100_800_1,
+                     G_1000_8000_1,
+                     G_10000_80000_1,
+                     G_20000_160000_1,
+                     G_30000_240000_1]
 
-        file_list = [G_10_80_0, G_100_800_0, G_1000_8000_0, G_10000_80000_0, G_20000_160000_0, G_30000_240000_0,
-                     G_10_80_1, G_100_800_1, G_1000_8000_1, G_10000_80000_1, G_20000_160000_1, G_30000_240000_1,
-                     G_10_80_2, G_100_800_2, G_1000_8000_2, G_10000_80000_2, G_20000_160000_2, G_30000_240000_2]
-
-        algo_dict = {G_10_80_0: None, G_100_800_0: None, G_1000_8000_0: None, G_20000_160000_0: None, G_30000_240000_0: None,
-                     G_10_80_1: None, G_100_800_1: None, G_1000_8000_1: None, G_20000_160000_1: None, G_30000_240000_1: None,
-                     G_10_80_2: None, G_100_800_2: None, G_1000_8000_2: None, G_20000_160000_2: None, G_30000_240000_2: None}
+        algo_dict = {G_10_80_1: None,
+                     G_100_800_1: None,
+                     G_1000_8000_1: None,
+                     G_20000_160000_1: None,
+                     G_30000_240000_1: None}
 
         print("load netowrkx execution times:")
 
@@ -193,8 +173,6 @@ class Tests(unittest.TestCase):
             stop_timeit = timeit.default_timer() - start_timeit
             stop_time = time.perf_counter() - start_time
 
-            # print("shortest path: {}".format(path))
-            # print("networkx shortest path from {} to {}: {}, by timeit: {}, by time: {}".format(s, d, file_name, stop_timeit, stop_time))
             result['nx_sp_time'].append({file_name: (stop_time + stop_timeit) / 2})
 
         print(result['nx_sp_time'])
