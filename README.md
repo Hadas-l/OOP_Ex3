@@ -53,6 +53,6 @@ for several functions such as: <br/>
 * strongly connected components
 
 
-[picture](images/graph.png)
+![picture](images/graph.png)
 
 raw data can be found in the wiki page.
