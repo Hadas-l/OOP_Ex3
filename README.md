@@ -52,6 +52,7 @@ for several functions such as: <br/>
 * shortest path
 * strongly connected components
 
+
 [picture](images/graph.png)
 
 raw data can be found in the wiki page.
