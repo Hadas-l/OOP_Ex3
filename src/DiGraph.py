@@ -226,4 +226,6 @@ class DiGraph:
         return "|V|={} , |E|={}".format(self.v_size(), self.e_size())
 
     def __eq__(self, other):
-        return self.nodes == other.nodes and self.edge_size == other.edge_size and self.node_size == other.node_size
+        return self.nodes == other.nodes and self.edge_size == other.edge_size \
+               and self.node_size == other.node_size and self.connected_to == other.connected_to \
+               and self.neighbors == other.neighbors
