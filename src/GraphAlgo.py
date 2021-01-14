@@ -5,6 +5,7 @@ import sys
 from src.DiGraph import DiGraph
 import heapq
 import matplotlib.pyplot as plt
+import random
 
 
 class GraphAlgo:
@@ -262,13 +263,17 @@ class GraphAlgo:
 
         nodes = self.graph.get_all_v()
 
+        for n in nodes:
+            x, y, z = random.uniform(0, self.graph.v_size()), random.uniform(0, self.graph.v_size()), 0
+            nodes[n].pos = (x, y, z)
+
         x_, y_, z_ = [], [], []
         xy_id = []
         ax = plt.axes()
         for n in nodes:
             node_ = nodes[n]
             if node_.pos == (0, 0, 0):
-                x, y, z = node_.id, node_.id, 0
+                x, y, z = random.uniform(0, self.graph.v_size()), random.uniform(0, self.graph.v_size()), 0
             else:
                 (x, y, z) = node_.pos
 
@@ -277,7 +282,7 @@ class GraphAlgo:
                 o_ = nodes[out]
 
                 if o_.pos == (0, 0, 0):
-                    o_x, o_y, o_z = o_.id, o_.id, 0
+                    o_x, o_y, o_z = random.uniform(0, self.graph.v_size()), random.uniform(0, self.graph.v_size()), 0
                 else:
                     (o_x, o_y, o_z) = o_.pos
 
