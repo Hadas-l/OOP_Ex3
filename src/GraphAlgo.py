@@ -65,14 +65,17 @@ class GraphAlgo:
         @return: True if the save was successful, Flase o.w.
         """
         try:
-
+            nodes = self.graph.get_all_v()
             graph_json = {"Nodes": [], "Edges": []}
 
-            for node_key in self.graph.get_all_v():
-                node = self.graph.get_all_v()[node_key]
+            for node_key in nodes:
+                node = nodes[node_key]
 
                 # convert pos from tuple to string
-                x, y, z = node.pos
+                if node.pos is None:
+                    x, y, z = 0, 0, 0
+                else:
+                    x, y, z = node.pos
                 pos_string = "{},{},{}".format(x, y, z)
 
                 graph_json["Nodes"].append({
@@ -183,75 +186,102 @@ class GraphAlgo:
 
         return float('inf'), []
 
-    def dfs(self, v: int, visited: dict, final, graph=None) -> list:
-        """
-        utill function to scan graph recursively with DFS
-        :param graph: transposed graph - default to none
-        :param final: strongly connected component list
-        :param nodes: dict of nodes for the current graph dfs will run on
-        :param v: current node
-        :param visited: list of visited vertexes
-        :return: list representing a strongly connected component
-        """
-        if graph:
-            visited[v] = True
+    def bfs_util(self, v, nodes, stack):
+        q = [v]
+        nodes[v].tag = True
 
-            final.append(v)
+        while q:
+            indx = q.pop()
 
-            for out in graph.all_out_edges_of_node(v):
-                if not visited[out]:
-                    self.dfs(out, visited, final, graph)
+            for i in self.graph.all_out_edges_of_node(indx):
+                if not nodes[i].tag:
+                    nodes[i].tag = True
+                    q.append(i)
+            stack.append(indx)
 
-            return final
+    def bfs(self, v, graph, final):
+        q = [v]
+        final.append(v)
+        graph.nodes[v].tag = True
 
-        else:
-            visited[v] = True
+        while q:
+            indx = heapq.heappop(q)
 
-            outs = self.graph.all_out_edges_of_node(v)
-            for out in outs:
-                if not visited[out]:
-                    self.dfs(self.graph.get_all_v()[out].id, visited, final)
-            final.append(v)
+            for i in graph.all_out_edges_of_node(indx):
+
+                if not graph.nodes[i].tag:
+                    graph.nodes[i].tag = True
+                    q.append(i)
+                    final.append(i)
+
+        return final
 
     def connected_component(self, id1: int) -> list:
         """
         Finds the Strongly Connected Component(SCC) that node id1 is a part of.
+        used Kosaraju's algorithm with BFS
+
         @param id1: The node id
         @return: The list of nodes in the SCC
         """
 
-        for i in self.connected_components():
-            if id1 in i:
-                return i
+        nodes = self.graph.get_all_v()
 
-        return []
+        for n in nodes:
+            nodes[n].tag = False
+
+        stack = []
+
+        self.bfs_util(id1, nodes, stack)
+
+        # transpose graph
+        transpose_graph = self.graph.transpose()
+
+        scc_path = []
+
+        self.bfs(id1, transpose_graph, scc_path)
+
+        return list(set(stack).intersection(scc_path))
 
     def connected_components(self) -> List[list]:
         """
+        Finds the Strongly Connected Component(SCC) that node id1 is a part of.
+        used Kosaraju's altered with BFS to avoid recursive overflow
+
         Finds all the Strongly Connected Component(SCC) in the graph.
         @return: The list all SCC
         """
-        stack = []
 
-        visited = {i: False for i in self.graph.get_all_v()}
+        for n in self.graph.get_all_v():
+            self.graph.get_all_v()[n].tag = False
 
-        for v in self.graph.get_all_v():
-            if not visited[v]:
-                self.dfs(v, visited, stack)
+        result = []
 
-        transposed = self.get_graph().transpose()
+        for n in self.graph.get_all_v():
 
-        visited = {i: False for i in self.graph.get_all_v()}
+            flag = False
+            for i in result:
+                if n in i: flag = True
 
-        res = []
+            if flag: continue
 
-        while stack:
-            key = stack.pop()
-            if not visited[key]:
-                component = self.dfs(key, visited, [], graph=transposed)
-                res.append(component)
+            for x in self.graph.get_all_v():
+                self.graph.get_all_v()[x].tag = False
 
-        return res
+            stack = []
+
+            self.bfs_util(n, self.graph.get_all_v(), stack)
+
+            # transpose graph
+            transpose_graph = self.graph.transpose()
+
+            scc_path = []
+
+            self.bfs(n, transpose_graph, scc_path)
+
+            result.append(list(set(stack).intersection(scc_path)))
+
+        return result
 
     def plot_graph(self) -> None:
         """
@@ -264,27 +294,26 @@ class GraphAlgo:
         nodes = self.graph.get_all_v()
 
         for n in nodes:
-            x, y, z = random.uniform(0, self.graph.v_size()), random.uniform(0, self.graph.v_size()), 0
-            nodes[n].pos = (x, y, z)
+            if nodes[n].pos is None:
+                x, y, z = random.uniform(0, self.graph.v_size()), random.uniform(0, self.graph.v_size()), 0
+                nodes[n].pos = (x, y, z)
 
         x_, y_, z_ = [], [], []
         xy_id = []
+
         ax = plt.axes()
         for n in nodes:
             node_ = nodes[n]
-            if node_.pos == (0, 0, 0):
-                x, y, z = random.uniform(0, self.graph.v_size()), random.uniform(0, self.graph.v_size()), 0
-            else:
-                (x, y, z) = node_.pos
+
+            (x, y, z) = node_.pos
 
             for out in self.graph.all_out_edges_of_node(n):
 
-                o_ = nodes[out]
+                o_ = self.graph.nodes[out]
 
-                if o_.pos == (0, 0, 0):
-                    o_x, o_y, o_z = random.uniform(0, self.graph.v_size()), random.uniform(0, self.graph.v_size()), 0
-                else:
-                    (o_x, o_y, o_z) = o_.pos
+                (o_x, o_y, o_z) = o_.pos
+
+                # print(f"x:{x}, y:{y}, dx:{o_x-x}, dy:{o_y-y}")
 
                 # plot arrows between nodes
                 ax.quiver(x, y, o_x-x, o_y-y, angles='xy', scale_units='xy', scale=1, width=0.005)
@@ -299,8 +328,8 @@ class GraphAlgo:
 
         # plot node id's
         for i, (x, y, id_) in enumerate(xy_id):
-            plt.annotate(id_, (x, y), fontsize='xx-large', color='red')
+            plt.annotate(id_, (x, y), fontsize='xx-large', color='green')
 
         # plot nodes
-        plt.plot(x_, y_, 'bo')
+        plt.plot(x_, y_, 'ro')
         plt.show()
