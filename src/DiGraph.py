@@ -26,6 +26,15 @@ class DiGraph:
             self.id = key
             self.pos = pos
 
+            self.ins = 0
+            self.outs = 0
+
+        def __repr__(self):
+            return "{}: |edges out| {} |edges in| {}".format(self.id, self.outs, self.ins)
+
+        def __eq__(self, other):
+            return self.id == other.id and self.pos == other.pos
+
     def __init__(self, graph=None):
         self.nodes = {}
         self.neighbors = {}
@@ -104,6 +113,9 @@ class DiGraph:
                     self.neighbors[id1][id2] = weight
                     self.connected_to[id2][id1] = weight
 
+                    self.nodes[id1].outs += 1
+                    self.nodes[id2].ins += 1
+
                     self.edge_size += 1
                     self.mc += 1
 
@@ -149,12 +161,12 @@ class DiGraph:
             for n in self.neighbors[node_id]:
                 del self.connected_to[n][node_id]
                 self.edge_size -= 1
-                self.mc += 1
+                self.nodes[n].ins -= 1
 
             for n in self.connected_to[node_id]:
                 del self.neighbors[n][node_id]
                 self.edge_size -= 1
-                self.mc += 1
+                self.nodes[n].outs -= 1
 
             self.node_size -= 1
             self.mc += 1
@@ -179,6 +191,9 @@ class DiGraph:
 
                 del self.neighbors[node_id1][node_id2]
                 del self.connected_to[node_id2][node_id1]
+
+                self.nodes[node_id1].outs -= 1
+                self.nodes[node_id1].ins -= 1
 
                 self.edge_size -= 1
                 self.mc += 1
@@ -209,3 +224,6 @@ class DiGraph:
 
     def __str__(self):
         return "|V|={} , |E|={}".format(self.v_size(), self.e_size())
+
+    def __eq__(self, other):
+        return self.nodes == other.nodes and self.edge_size == other.edge_size and self.node_size == other.node_size
