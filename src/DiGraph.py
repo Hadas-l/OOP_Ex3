@@ -22,18 +22,22 @@ class DiGraph:
         A simple class to represent a Node
         in a graph with simple data : key, position
         """
-        def __init__(self, key, pos=(0, 0, 0)):
+
+        def __init__(self, key, pos=None):
             self.id = key
             self.pos = pos
 
             self.ins = 0
             self.outs = 0
 
+            # tag to be used for BFS algo
+            self.tag = False
+
         def __repr__(self):
             return "{}: |edges out| {} |edges in| {}".format(self.id, self.outs, self.ins)
 
         def __eq__(self, other):
-            return self.id == other.id and self.pos == other.pos
+            return self.id == other.id and self.pos == other.pos and self.tag == other.tag
 
     def __init__(self, graph=None):
         self.nodes = {}
@@ -109,7 +113,6 @@ class DiGraph:
             if weight >= 0:
 
                 if id2 not in self.neighbors[id1] and id1 not in self.connected_to[id2]:
-
                     self.neighbors[id1][id2] = weight
                     self.connected_to[id2][id1] = weight
 
@@ -188,7 +191,6 @@ class DiGraph:
         if all(key in self.nodes for key in (node_id1, node_id2)):
 
             if node_id2 in self.neighbors[node_id1] and node_id1 in self.connected_to[node_id2]:
-
                 del self.neighbors[node_id1][node_id2]
                 del self.connected_to[node_id2][node_id1]
 
